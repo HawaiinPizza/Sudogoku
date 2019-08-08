@@ -44,13 +44,16 @@ class SudGrid{
 
 		void Fill(){
 			int Length=sqrt(TotalSize);
-			int Index=0;
+			int Index=1;
+
 			for(int i=0; i<Length; i++){
 				for(int j=0; j<Length; j++){
 					Grid[i][j]=Index;
 					Index++;
 				}
+				Index=1;
 			}
+
 			for(int i=0; i<Length; i++){
 				for(int j=0; j<Length; j++){
 				}
@@ -89,8 +92,14 @@ class SudGrid{
 			return true;
 		}
 		bool usedInSubGrid(Pos Loc, int Check){
-			//If Check used in the subgrid return true
-			return false;
+			int Gridx=Loc.x/3  ;
+			int Gridy=Loc.y/3 ;
+			for(int i=0; i<3; i++){
+				for(int j=0; j<3; j++){
+					if(Grid[i+3*Gridx][j+3*Gridy] == Check)
+						return false;
+				}
+			}
 			//If Check not used in the subgrid return true
 			return true;
 		}
@@ -104,9 +113,18 @@ class SudGrid{
 		void printGrid(){
 			for(int i=0; i<9; i++){
 				for(int j=0; j<9; j++){
-					cout << Grid[i][j] <<'\t';
+					string N= (j%3==2) ? "| " : " ";
+					File << Grid[i][j] <<' ' << N;
 				}
-				cout << endl;
+				if(i%3==2){
+					File <<endl;
+					for(int s=0; s<45; s++)
+						File<<'-';
+					File<<endl;
+				}
+				else{
+					File << endl;
+				}
 			}
 		}
 	private:
