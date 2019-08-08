@@ -44,31 +44,32 @@ class SudGrid{
 
 		void Fill(){
 			int Length=sqrt(TotalSize);
-			int Index=1;
-
-			for(int i=0; i<Length; i++){
-				for(int j=0; j<Length; j++){
-					Grid[i][j]=Index;
-					Index++;
+			for(int i=0; i<9; i++){
+				for(int j=0; j<9; j++){
+					Grid[i][j]=0;
 				}
-				Index=1;
 			}
 
+
 			for(int i=0; i<Length; i++){
 				for(int j=0; j<Length; j++){
+					//selectUnassignedLocation(i,j);
 				}
 			}
 
 		}
 
-		void selectUnassignedLocation(){
-			for(int i=0; i<Length; i++){
-				for(int j=0; j<Length; j++){
-					int Val=Dice()%9+1;
-					while(Grid[i][j]==-1){
-						if (validToPlace(Pos(i,j), Val))
-								Grid[i][j]=Val;
-					}
+		void selectUnassignedLocation(int i, int j){
+			int Val[]={4, 5, 6, 7, 8, 9, 1, 2, 3};
+			int Index=0;
+			int Start=Dice()%9;
+			while(Grid[i][j]==0 && Index<10){
+				if (validToPlace(Pos(i,j), Val[(Index+Start)%9])){
+					Grid[i][j]=Val[(Index+Start)%9];
+					return;
+				}
+				else{
+					Index++;
 				}
 			}
 		}
@@ -104,10 +105,14 @@ class SudGrid{
 			return true;
 		}
 		bool validToPlace (Pos Loc, int Check){
-			if(usedInRow(Loc,Check)  && usedInColumn(Loc,Check)  && usedInSubGrid(Loc,Check))
-				return true;
-			else
-				return false;
+			if( usedInSubGrid(Loc,Check)){
+				if(usedInRow(Loc,Check)){
+					if (usedInColumn(Loc,Check)){
+					return true;
+					}
+				}
+			}
+			return false;
 
 		}
 		void printGrid(){
@@ -118,7 +123,7 @@ class SudGrid{
 				}
 				if(i%3==2){
 					File <<endl;
-					for(int s=0; s<45; s++)
+					for(int s=0; s<29; s++)
 						File<<'-';
 					File<<endl;
 				}
