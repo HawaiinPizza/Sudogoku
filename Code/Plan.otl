@@ -1,0 +1,24 @@
+Sudokugrid
+	9x9, of 81 possiples, with 17 at a minimal
+	Each column/row/subgrid has unique digits between 1-9,
+Solution States
+	Row/Column of uniuqe numbers: nubmer of spaces-1
+	Subgrid: n number of spaces-1
+	No empty lcoations are there.
+	No lcatiosn and potential solution isn't viable.
+Solver Algorithm
+	Find row, column of an unassigned location
+	If no unassigned locations, return true
+	For digits from 1 to 9
+		Check to see there is no requirement conflict for digit at row col.
+			Assign digit to row, column and recursively try fill in rest of grid
+		If recursion successful, return true
+		Else, remove digit and try another
+	If all digits have been tried and nothing worked, return false	
+
+Creator Algorithm 
+	1. Generate a full grid of numbers (fully filled in). Cannot randomly generate numbers to fill in the grid. Need to make sure that the numbers are positioned on the grid following the Sudoku rules. To do so, use the sudoku solver algorithm applied to an empty grid. Need to add a random element to this solver algorithm to make sure that a new grid is generated every time it is run.
+	2. From the completed full grid, remove 1 value at a time.
+	3. For each value removed, run the sudoku solver algorithm to see if the grid can still be solved and to count the number of solutions it leads to.
+	4. If the resulting grid only has one solution, carry on the process from step 2. If not need to put the value taken away back in the grid.
+	5. Repeat the same process from step 2 several times using a different value each time to try to remove additional numbers, resulting in a more difficult grid to solve. The maximum number of removals results in 17 numbers in the partial grid.
