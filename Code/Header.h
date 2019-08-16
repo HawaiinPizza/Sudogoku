@@ -12,7 +12,7 @@ struct Pos{
 
 	Pos& operator=(const Pos& Other){
 		x=Other.x;
-		y=Other.x;
+		y=Other.y;
 		return *this;
 	}
 
@@ -43,37 +43,47 @@ class SudGrid{
 
 
 		void Fill(){
-			int Length=sqrt(TotalSize);
 			for(int i=0; i<9; i++){
 				for(int j=0; j<9; j++){
 					Grid[i][j]=0;
 				}
 			}
-
-
-			for(int i=0; i<Length; i++){
-				for(int j=0; j<Length; j++){
-					//selectUnassignedLocation(i,j);
-				}
-			}
-
 		}
 
-		void selectUnassignedLocation(int i, int j){
-			int Val[]={4, 5, 6, 7, 8, 9, 1, 2, 3};
-			int Index=0;
-			int Start=Dice()%9;
-			while(Grid[i][j]==0 && Index<10){
-				if (validToPlace(Pos(i,j), Val[(Index+Start)%9])){
-					Grid[i][j]=Val[(Index+Start)%9];
-					return;
-				}
-				else{
-					Index++;
-				}
+//>>
+void Test(){
+	Pos Index;
+	printGrid(3);
+	for(int i=0; i<81; i++){
+		selectUnassignedLocation(Index);
+		char Case = (i+1)%9==0 ? '\n' : '\t';
+		cout << Index.x << ':' << Index.y <<"->" << Grid[Index.x][Index.y] << Case;
+	}
+
+	printGrid(3);
+	
+	
+}
+//
+//
+//Find an unused location
+bool selectUnassignedLocation(Pos &Index){
+	for (int i=0; i<9; i++){
+		for(int j=0; j<9; j++){
+			if(Grid[i][j]==0){
+				Index=Pos(i,j);
+				cout << i <<':' << j << '\n';
+				Grid[i][j]=1;
+				return true;
 			}
 		}
-
+	}
+	return false;
+}
+		
+//
+//>>
+		
 		bool usedInRow(Pos Loc, int Check){
 			//If Check used in the row return true
 			for(int i=0; i<9; i++){
@@ -115,6 +125,7 @@ class SudGrid{
 			return false;
 
 		}
+
 		void printGrid(){
 			for(int i=0; i<9; i++){
 				for(int j=0; j<9; j++){
@@ -132,6 +143,25 @@ class SudGrid{
 				}
 			}
 		}
+
+		void printGrid(int x){
+			for(int i=0; i<9; i++){
+				for(int j=0; j<9; j++){
+					string N= (j%3==2) ? "| " : " ";
+					cout << Grid[i][j] <<' ' << N;
+				}
+				if(i%3==2){
+					cout <<endl;
+					for(int s=0; s<29; s++)
+						cout<<'-';
+					cout<<endl;
+				}
+				else{
+					cout << endl;
+				}
+			}
+		}
+
 	private:
 		ofstream& File;
 		int Grid[9][9];

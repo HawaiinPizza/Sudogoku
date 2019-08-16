@@ -39,16 +39,9 @@ int main(){
 	//a.usedInSubGrid(Pos(6,0), 0);
 	//a.usedInSubGrid(Pos(7,0), 0);
 	//a.usedInSubGrid(Pos(8,0), 0);
-	cout << "BITCHING";
-	for(int i=0; i<9; i++){
-		for(int j=0; j<9; j++)
-			a.selectUnassignedLocation(i,j);
-	}
 
+	a.Test();
 
-
-	cout <<'\n';
-	a.printGrid();
 
 	
 
