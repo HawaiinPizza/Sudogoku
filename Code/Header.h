@@ -30,7 +30,40 @@ class SolveGrid{
 	public:
 		//SudGrid (ofstream &output, int seed) : File(output), Seed(seed) {
 		SolveGrid(ifstream &Read) : File(Read){
+			GenGrid();
+		}
+
+		void GenGrid(){
+			//Read through File.
+			//Each line interpet as Line
+			//Split up the line as an array
+
+			string Line;
+			int x=0;
+			while(getline(File, Line)){
+				
+				int Arr[8];
+				File >> 
+					Arr[0] >> 
+					Arr[1] >> 
+					Arr[2] >> 
+					Arr[3] >> 
+					Arr[4] >> 
+					Arr[5] >> 
+					Arr[6] >> 
+					Arr[7] >>
+					Arr[8];
+				for(int i=0; i<9; i++){
+					cout << x << ':' << i <<'/'<< Arr[i] << '\t';
+					Grid[x][i]=Arr[i];
+				}
+				cout << "\n\n";
+				x++;
+			}
+			cout << "\n\n";
 			Solve();
+			printGrid();
+
 		}
 
 		bool Solve(){
@@ -302,23 +335,11 @@ class SudGrid{
 		}
 
 		void printGrid(){
-			for(int s=0; s<29; s++)
-				File<<'-';
-			File << '\n';
 			for(int i=0; i<9; i++){
 				for(int j=0; j<9; j++){
-					string N= (j%3==2) ? "| " : " ";
-					File << Grid[i][j] <<' ' << N;
+					File << Grid[i][j] <<' ' << ' ';
 				}
-				if(i%3==2){
-					File <<endl;
-					for(int s=0; s<29; s++)
-						File<<'-';
-					File<<endl;
-				}
-				else{
 					File << endl;
-				}
 			}
 		}
 
