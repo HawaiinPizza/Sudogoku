@@ -26,6 +26,120 @@ struct Pos{
 
 };
 
+class SolveGrid{
+	public:
+		//SudGrid (ofstream &output, int seed) : File(output), Seed(seed) {
+		SolveGrid(ifstream &Read) : File(Read){
+			Solve();
+		}
+
+		bool Solve(){
+			Pos Index;
+			if(!selectUnassignedLocation(Index)){
+				return true;
+			}
+			srand (time(NULL));
+			int ran=rand()%10+1;
+			for(int i=0; i<9; i++){
+				int val=(i+ran)%9+1;	
+				if (validToPlace(Index,val)){
+					Grid[Index.x][Index.y]=val;
+					if(Solve())
+						return true;
+					Grid[Index.x][Index.y]=0;
+				}
+					
+			}
+				return false;
+		}
+		  
+		  
+		//Find an unused location
+		bool selectUnassignedLocation(Pos &Index){
+			for (int i=0; i<9; i++){
+				for(int j=0; j<9; j++){
+					if(Grid[i][j]==0){
+						Index=Pos(i,j);
+						return true;
+					}
+				}
+			}
+			return false;
+		}
+				
+		//
+		
+		bool usedInRow(Pos Loc, int Check){
+			//If Check used in the row return true
+			for(int i=0; i<9; i++){
+				if (Grid[Loc.x][(Loc.y+i)%9] == Check)
+					return false;
+			}
+			//If Check not used in the row return true
+			return true;
+		}
+		bool usedInColumn(Pos Loc, int Check){
+			//If Check used in the column return true
+			for(int i=0; i<9; i++){
+				if (Grid[(Loc.x+i)%9][Loc.y] == Check)
+					return false;
+			}
+			//If Check not used in the column return true
+			return true;
+		}
+		bool usedInSubGrid(Pos Loc, int Check){
+			int Gridx=Loc.x/3  ;
+			int Gridy=Loc.y/3 ;
+			for(int i=0; i<3; i++){
+				for(int j=0; j<3; j++){
+					if(Grid[i+3*Gridx][j+3*Gridy] == Check)
+						return false;
+				}
+			}
+			//If Check not used in the subgrid return true
+			return true;
+		}
+		bool validToPlace (Pos Loc, int Check){
+			if( usedInSubGrid(Loc,Check)){
+				if(usedInRow(Loc,Check)){
+					if (usedInColumn(Loc,Check)){
+					return true;
+					}
+				}
+			}
+			return false;
+
+		}
+
+
+		void printGrid(){
+			for(int s=0; s<29; s++)
+				cout<<'-';
+			cout << '\n';
+			for(int i=0; i<9; i++){
+				for(int j=0; j<9; j++){
+					string N= (j%3==2) ? "| " : " ";
+					cout << Grid[i][j] <<' ' << N;
+				}
+				if(i%3==2){
+					cout <<endl;
+					for(int s=0; s<29; s++)
+						cout<<'-';
+					cout<<endl;
+				}
+				else{
+					cout << endl;
+				}
+			}
+		}
+	private:
+		int Grid[9][9];
+		ifstream& File;
+
+};
+
+
+
 
 class SudGrid{
 	public:
@@ -39,8 +153,48 @@ class SudGrid{
 			string wow=to_string(seed);
 			seed_seq SampleSeed(wow.begin(), wow.end());
 			Dice.seed(SampleSeed);
+			Fill();
 		}
 
+		SudGrid (ofstream &output, int seed, int Hint) : File(output), Seed(seed) {
+			Size=Pos(9,9);
+			TotalSize=Size.x*Size.y;
+			Length=sqrt(TotalSize);
+			string wow=to_string(seed);
+			seed_seq SampleSeed(wow.begin(), wow.end());
+			Dice.seed(SampleSeed);
+			Fill(Hint);
+		}
+
+
+
+
+		void Fill(int Hint){
+			for(int i=0; i<9; i++){
+				for(int j=0; j<9; j++){
+					Grid[i][j]=0;
+				}
+			}
+			
+			Solve();
+			for(int Index=0; Index<Hint; Index++){
+				Pos Rand(rand()%9,rand()%9);
+				while(Grid[Rand.x][Rand.y]==0){
+					 Rand=Pos(rand()%9,rand()%9);
+				}
+				Grid[Rand.x][Rand.y]=0;
+
+			}
+
+			int Index=0;
+			for(int i=0; i<9; i++){
+				for(int j=0; j<9; j++){
+					if(Grid[i][j]==0){
+						Index++;
+					}
+				}
+			}
+		}
 
 		void Fill(){
 			for(int i=0; i<9; i++){
@@ -48,41 +202,62 @@ class SudGrid{
 					Grid[i][j]=0;
 				}
 			}
-		}
+			
+			Solve();
+			for(int Index=0; Index<17; Index++){
+				Pos Rand(rand()%9,rand()%9);
+				while(Grid[Rand.x][Rand.y]==0){
+					 Rand=Pos(rand()%9,rand()%9);
+				}
+				Grid[Rand.x][Rand.y]=0;
 
-//>>
-void Test(){
-	Pos Index;
-	printGrid(3);
-	for(int i=0; i<81; i++){
-		selectUnassignedLocation(Index);
-		char Case = (i+1)%9==0 ? '\n' : '\t';
-		cout << Index.x << ':' << Index.y <<"->" << Grid[Index.x][Index.y] << Case;
-	}
+			}
 
-	printGrid(3);
-	
-	
-}
-//
-//
-//Find an unused location
-bool selectUnassignedLocation(Pos &Index){
-	for (int i=0; i<9; i++){
-		for(int j=0; j<9; j++){
-			if(Grid[i][j]==0){
-				Index=Pos(i,j);
-				cout << i <<':' << j << '\n';
-				Grid[i][j]=1;
-				return true;
+			int Index=0;
+			for(int i=0; i<9; i++){
+				for(int j=0; j<9; j++){
+					if(Grid[i][j]==0){
+						Index++;
+					}
+				}
 			}
 		}
-	}
-	return false;
-}
-		
-//
-//>>
+
+		bool Solve(){
+			Pos Index;
+			if(!selectUnassignedLocation(Index)){
+				return true;
+			}
+			srand (time(NULL));
+			int ran=rand()%10+1;
+			for(int i=0; i<9; i++){
+				int val=(i+ran)%9+1;	
+				if (validToPlace(Index,val)){
+					Grid[Index.x][Index.y]=val;
+					if(Solve())
+						return true;
+					Grid[Index.x][Index.y]=0;
+				}
+					
+			}
+				return false;
+		}
+		  
+		  
+		//Find an unused location
+		bool selectUnassignedLocation(Pos &Index){
+			for (int i=0; i<9; i++){
+				for(int j=0; j<9; j++){
+					if(Grid[i][j]==0){
+						Index=Pos(i,j);
+						return true;
+					}
+				}
+			}
+			return false;
+		}
+				
+		//
 		
 		bool usedInRow(Pos Loc, int Check){
 			//If Check used in the row return true
@@ -127,6 +302,9 @@ bool selectUnassignedLocation(Pos &Index){
 		}
 
 		void printGrid(){
+			for(int s=0; s<29; s++)
+				File<<'-';
+			File << '\n';
 			for(int i=0; i<9; i++){
 				for(int j=0; j<9; j++){
 					string N= (j%3==2) ? "| " : " ";
@@ -145,6 +323,9 @@ bool selectUnassignedLocation(Pos &Index){
 		}
 
 		void printGrid(int x){
+			for(int s=0; s<29; s++)
+				cout<<'-';
+			cout << '\n';
 			for(int i=0; i<9; i++){
 				for(int j=0; j<9; j++){
 					string N= (j%3==2) ? "| " : " ";
