@@ -2,11 +2,20 @@
 #include "Header.h"
 
 int main(){
-	ofstream File("WOW.txt");
+	ofstream File("File.dat");
+
 	SudGrid a(File, 9, 5);
 	a.printGrid();
 
-	ifstream Dab("WOW.txt");
+	ifstream Dab("OW.txt");
+	if(!Dab.is_open()){
+		cout << "THIS FILE DOESNT EXIST!";
+		return -5;
+	}
+	else if(Dab.peek() == ifstream::traits_type::eof()){
+		cout << "This file doesn't have anything in it.";
+		return -8;
+	}
 	a.printGrid(3);
 	SolveGrid A(Dab);
 

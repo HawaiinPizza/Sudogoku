@@ -40,33 +40,29 @@ class SolveGrid{
 
 			string Line;
 			int x=0;
-			while(getline(File, Line)){
+			int Arr[8];
+			while(File >> Arr[0] >> Arr[1] >> Arr[2] >> Arr[3] >> Arr[4] >> Arr[5] >> Arr[6] >> Arr[7] >> Arr[8]){
 				
-				int Arr[8];
-				File >> 
-					Arr[0] >> 
-					Arr[1] >> 
-					Arr[2] >> 
-					Arr[3] >> 
-					Arr[4] >> 
-					Arr[5] >> 
-					Arr[6] >> 
-					Arr[7] >>
-					Arr[8];
 				for(int i=0; i<9; i++){
-					cout << x << ':' << i <<'/'<< Arr[i] << '\t';
+					if(Arr[i]<0 || Arr[i]>9){
+						cout << "ERROR This is a number not in range\n" ;
+							return;
+					}
+						
 					Grid[x][i]=Arr[i];
 				}
-				cout << "\n\n";
 				x++;
 			}
-			cout << "\n\n";
-			Solve();
+			int Com=0;
+			Solve(Com);
 			printGrid();
+			cout << "\n\n";
+			cout << Com;
+			cout << "\n\n";
 
 		}
 
-		bool Solve(){
+		bool Solve(int &Comp){
 			Pos Index;
 			if(!selectUnassignedLocation(Index)){
 				return true;
@@ -75,10 +71,12 @@ class SolveGrid{
 			int ran=rand()%10+1;
 			for(int i=0; i<9; i++){
 				int val=(i+ran)%9+1;	
+				Comp++;
 				if (validToPlace(Index,val)){
 					Grid[Index.x][Index.y]=val;
-					if(Solve())
+					if(Solve(Comp)){
 						return true;
+					}
 					Grid[Index.x][Index.y]=0;
 				}
 					
@@ -146,6 +144,7 @@ class SolveGrid{
 
 
 		void printGrid(){
+			cout << '\n' ;
 			for(int s=0; s<29; s++)
 				cout<<'-';
 			cout << '\n';
