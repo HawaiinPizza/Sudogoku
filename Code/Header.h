@@ -54,15 +54,16 @@ class SolveGrid{
 				x++;
 			}
 			int Com=0;
-			Solve(Com);
+			int Back=0;
+			Solve(Com,Back);
 			printGrid();
-			cout << "\n\n";
-			cout << Com;
-			cout << "\n\n";
+			cout << Com << "\tThis is the nubmer of comparisions\n";
+			cout << Back << "\tThis is the nubmer of backtrace\n";
 
 		}
 
-		bool Solve(int &Comp){
+
+		bool Solve(int &Comp, int &Back){
 			Pos Index;
 			if(!selectUnassignedLocation(Index)){
 				return true;
@@ -74,7 +75,8 @@ class SolveGrid{
 				Comp++;
 				if (validToPlace(Index,val)){
 					Grid[Index.x][Index.y]=val;
-					if(Solve(Comp)){
+					if(Solve(Comp, Back)){
+						Back++;
 						return true;
 					}
 					Grid[Index.x][Index.y]=0;
@@ -83,6 +85,9 @@ class SolveGrid{
 			}
 				return false;
 		}
+
+
+
 		  
 		  
 		//Find an unused location
@@ -179,9 +184,7 @@ class SudGrid{
 		//ouptut is where the outptu will be written in
 		//seed is used to generate random values
 		SudGrid (ofstream &output, int seed) : File(output), Seed(seed) {
-			Size=Pos(9,9);
-			TotalSize=Size.x*Size.y;
-			Length=sqrt(TotalSize);
+			Length=0;
 			string wow=to_string(seed);
 			seed_seq SampleSeed(wow.begin(), wow.end());
 			Dice.seed(SampleSeed);
@@ -189,9 +192,7 @@ class SudGrid{
 		}
 
 		SudGrid (ofstream &output, int seed, int Hint) : File(output), Seed(seed) {
-			Size=Pos(9,9);
-			TotalSize=Size.x*Size.y;
-			Length=sqrt(TotalSize);
+			this->Hint=Hint;
 			string wow=to_string(seed);
 			seed_seq SampleSeed(wow.begin(), wow.end());
 			Dice.seed(SampleSeed);
@@ -208,7 +209,11 @@ class SudGrid{
 				}
 			}
 			
-			Solve();
+			Comp=0;
+			Back=0;
+			Solve(Comp, Back);
+			cout << "This is the nubmer of comparisions\t" << Comp << '\n';
+			cout << "This is the nubmer of Back\t" << Back << '\n';
 			for(int Index=0; Index<Hint; Index++){
 				Pos Rand(rand()%9,rand()%9);
 				while(Grid[Rand.x][Rand.y]==0){
@@ -235,7 +240,10 @@ class SudGrid{
 				}
 			}
 			
-			Solve();
+			int Comp=0;
+			int Back=0;
+			Solve(Comp, Back);
+			cout << "This is the nubmer of comparisions\t" << Comp << '\n';
 			for(int Index=0; Index<17; Index++){
 				Pos Rand(rand()%9,rand()%9);
 				while(Grid[Rand.x][Rand.y]==0){
@@ -255,7 +263,9 @@ class SudGrid{
 			}
 		}
 
-		bool Solve(){
+
+
+		bool Solve(int &Comp, int &Back){
 			Pos Index;
 			if(!selectUnassignedLocation(Index)){
 				return true;
@@ -264,16 +274,21 @@ class SudGrid{
 			int ran=rand()%10+1;
 			for(int i=0; i<9; i++){
 				int val=(i+ran)%9+1;	
+				Comp++;
 				if (validToPlace(Index,val)){
 					Grid[Index.x][Index.y]=val;
-					if(Solve())
+					if(Solve(Comp, Back)){
+						Back++;
 						return true;
+					}
 					Grid[Index.x][Index.y]=0;
 				}
 					
 			}
 				return false;
 		}
+
+
 		  
 		  
 		//Find an unused location
@@ -330,7 +345,6 @@ class SudGrid{
 				}
 			}
 			return false;
-
 		}
 
 		void printGrid(){
@@ -361,14 +375,17 @@ class SudGrid{
 					cout << endl;
 				}
 			}
+			cout << "Number of hints\t" << Hint << '\n';
+			cout << "Comparisions divided by the total number of hints\t" << Comp/Hint << '\n';
 		}
 
 	private:
 		ofstream& File;
 		int Grid[9][9];
-		Pos Size;
-		int TotalSize;
 		int Seed;
+		int Hint=0;
+		int Back;
+		int Comp;
 		int Length;
 		minstd_rand0 Dice;
 		

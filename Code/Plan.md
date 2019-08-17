@@ -19,6 +19,9 @@
     - [ ] Time to create grid and solve the grid
   
 
+- User messages
+- Iterative output – when a sub-grid level is complete print out the grid as it looks at that point in time (e.g. when creating/solving grid – show grid after rows 1 through 3 have been completed)
+- Print final grid (partial for creator/solution for solver)
 
 # Plan
 ## Creator
